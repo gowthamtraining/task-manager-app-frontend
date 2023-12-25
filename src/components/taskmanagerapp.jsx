@@ -17,11 +17,17 @@ const TaskManagerApp = () => {
     const [name, setname] = useState("");
     const [id,setid] = useState()
     const [editable,seteditable] = useState(false)
+    console.log(url)
 
     const fetchtaskdata = async () => {
         try {
-            const res = await axios.get(`${url}/api/task`);
+            const res = await axios.get(`${url}`,{
+                headers:{
+                    "Content-Type":""
+                }
+            });
             settaskdata(res.data);
+           
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -29,12 +35,13 @@ const TaskManagerApp = () => {
 
     useEffect(() => {
         fetchtaskdata();
+        
     }, []);
-    // console.log(getValues("id"))
+
     const onsubmit = async () => {
 
         if(editable===true){
-            await axios.put(`${url}/api/task/${id}`,{name},{
+            await axios.put(`${url}/${id}`,{name},{
                 headers:{
                     "Content-Type":"application/json"
                 }
@@ -48,7 +55,7 @@ const TaskManagerApp = () => {
         }
         else{
         try {
-            await axios.post(`${url}/api/task`, { name }, {
+            await axios.post(`${url}`, { name }, {
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -62,7 +69,7 @@ const TaskManagerApp = () => {
     }
     };
     const DeleteTaskById =(id)=>{
-        axios.delete(`${url}/api/task/${id}`,{
+        axios.delete(`${url}/${id}`,{
             headers:{
                 "Content-Type":""
             }
@@ -74,7 +81,7 @@ const TaskManagerApp = () => {
         })
     }
     const gettaskbyid =(id)=>{
-        axios.get(`${url}/api/task/${id}`).then((res)=>{
+        axios.get(`${url}/${id}`).then((res)=>{
             if(res){
             seteditable(!editable)
             setid(id)
@@ -83,9 +90,9 @@ const TaskManagerApp = () => {
         })
     }
     const selecteditem=(id)=>{
-        axios.get(`${url}/api/task/${id}`).then((res)=>{
+        axios.get(`${url}/${id}`).then((res)=>{
             if(res){
-               axios.put(`${url}/api/task/${id}`,{name:res.data.name,complete:!res.data.complete}).then((res)=>{
+               axios.put(`${url}/${id}`,{name:res.data.name,complete:!res.data.complete}).then((res)=>{
                 fetchtaskdata()
                 if(res.data.complete){
                 toast.success("data selected")
