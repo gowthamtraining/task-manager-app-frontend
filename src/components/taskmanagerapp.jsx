@@ -108,10 +108,10 @@ const TaskManagerApp = () => {
     return (
         <div>
             <form>
-                <Card style={{ maxWidth: "30%", margin: "30px auto" }}>
+                <Card sx={{ maxWidth: '40%', margin: '30px auto', '@media (max-width: 600px) ': { maxWidth: '90%' },'@media (max-width:768px)':{maxWidth:'60%'},'@media (max-width:426px)':{maxWidth:'90%'} }}>
                     <CardContent>
                         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                            <Typography fontSize={30}>Task-Manager</Typography>
+                            <Typography fontSize={30} sx={{ fontSize: { xs: 13, sm: 20,md:25 },textAlign:"center" }}>Task-Manager</Typography>
                             <div style={{ display: "flex", gap: "10px" }}>
                                 <TextField
                                     label="name"
