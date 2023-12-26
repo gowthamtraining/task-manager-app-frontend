@@ -9,6 +9,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 import {toast} from "react-toastify"
 import { url } from "../App";
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 
@@ -16,6 +17,7 @@ const TaskManagerApp = () => {
     const [taskkdata, settaskdata] = useState([]);
     const [name, setname] = useState("");
     const [id,setid] = useState()
+    const [isloading,setisloading] = useState(true)
     const [editable,seteditable] = useState(false)
     console.log(url)
 
@@ -26,6 +28,7 @@ const TaskManagerApp = () => {
                     "Content-Type":""
                 }
             });
+            setisloading(false)
             settaskdata(res.data);
            
         } catch (error) {
@@ -35,7 +38,6 @@ const TaskManagerApp = () => {
 
     useEffect(() => {
         fetchtaskdata();
-        
     }, []);
 
     const onsubmit = async () => {
@@ -107,64 +109,71 @@ const TaskManagerApp = () => {
 
     return (
         <div>
-            <form>
+            {isloading===true?(
                 <Card sx={{ maxWidth: '40%', margin: '30px auto', '@media (max-width: 600px) ': { maxWidth: '90%' },'@media (max-width:768px)':{maxWidth:'60%'},'@media (max-width:426px)':{maxWidth:'90%'} }}>
-                    <CardContent>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                            <Typography fontSize={30} sx={{ fontSize: { xs: 13, sm: 20,md:25 },textAlign:"center" }}>Task-Manager</Typography>
-                            <div style={{ display: "flex", gap: "10px" }}>
-                                <TextField
-                                    label="name"
-                                    size="small"
-                                    value={name}
-                                    onChange={(e) => setname(e.target.value)}
-                                    type="string"
-                                    fullWidth
-                                />
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<AddBoxIcon />}
-                                    onClick={() => onsubmit()}
-                                >
-                                   {editable?"edit":"Add"}
-                                </Button>
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Typography style={{fontSize:"14px"}}>No Of Tasks: {taskkdata.length}</Typography>
-                                <Typography style={{fontSize:"14px"}}>No of Tasks Completed:{taskkdata.filter((res)=>res.complete === true).length}</Typography>
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                                {taskkdata.map((item) => (
-                                    <div
-                                        key={item._id}
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            border: "1px solid black",
-                                            padding: "5px 7px",
-                                            borderRadius: "5px",
-                                        }}
-                                    >
-                                        <Typography>{item.name}</Typography>
-                                        <ButtonGroup size="small">
-                                            <Button size="small">
-                                                {item.complete?
-                                                <CheckIcon fontSize="small" onClick={()=>selecteditem(item._id)} />:<CloseIcon fontSize="small" onClick={()=>selecteditem(item._id)}/>}
-                                            </Button>
-                                            <Button size="small" onClick={()=>DeleteTaskById(item._id)}>
-                                                <DeleteIcon fontSize="small" />
-                                            </Button>
-                                            <Button size="small" onClick={()=>gettaskbyid(item._id)}>
-                                                <SaveIcon fontSize="small" />
-                                            </Button>
-                                        </ButtonGroup>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </CardContent>
+                <CircularProgress/>
                 </Card>
-            </form>
+            ):(
+                  <form>
+                  <Card sx={{ maxWidth: '40%', margin: '30px auto', '@media (max-width: 600px) ': { maxWidth: '90%' },'@media (max-width:768px)':{maxWidth:'60%'},'@media (max-width:426px)':{maxWidth:'90%'} }}>
+                      <CardContent>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                              <Typography fontSize={30} sx={{ fontSize: { xs: 13, sm: 20,md:25 },textAlign:"center" }}>Task-Manager</Typography>
+                              <div style={{ display: "flex", gap: "10px" }}>
+                                  <TextField
+                                      label="name"
+                                      size="small"
+                                      value={name}
+                                      onChange={(e) => setname(e.target.value)}
+                                      type="string"
+                                      fullWidth
+                                  />
+                                  <Button
+                                      variant="outlined"
+                                      startIcon={<AddBoxIcon />}
+                                      onClick={() => onsubmit()}
+                                  >
+                                     {editable?"edit":"Add"}
+                                  </Button>
+                              </div>
+                              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                  <Typography style={{fontSize:"14px"}}>No Of Tasks: {taskkdata.length}</Typography>
+                                  <Typography style={{fontSize:"14px"}}>No of Tasks Completed:{taskkdata.filter((res)=>res.complete === true).length}</Typography>
+                              </div>
+                              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                  {taskkdata.map((item) => (
+                                      <div
+                                          key={item._id}
+                                          style={{
+                                              display: "flex",
+                                              justifyContent: "space-between",
+                                              border: "1px solid black",
+                                              padding: "5px 7px",
+                                              borderRadius: "5px",
+                                          }}
+                                      >
+                                          <Typography>{item.name}</Typography>
+                                          <ButtonGroup size="small">
+                                              <Button size="small">
+                                                  {item.complete?
+                                                  <CheckIcon fontSize="small" onClick={()=>selecteditem(item._id)} />:<CloseIcon fontSize="small" onClick={()=>selecteditem(item._id)}/>}
+                                              </Button>
+                                              <Button size="small" onClick={()=>DeleteTaskById(item._id)}>
+                                                  <DeleteIcon fontSize="small" />
+                                              </Button>
+                                              <Button size="small" onClick={()=>gettaskbyid(item._id)}>
+                                                  <SaveIcon fontSize="small" />
+                                              </Button>
+                                          </ButtonGroup>
+                                      </div>
+                                  ))}
+                              </div>
+                          </div>
+                      </CardContent>
+                  </Card>
+              </form>
+            )}
+          
         </div>
     );
 };
